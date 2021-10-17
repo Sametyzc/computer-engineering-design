@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3559297176007848097}
   - component: {fileID: 3559297176007848096}
+  - component: {fileID: 3969083280644104554}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -45,6 +46,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 2931604500597588581, guid: a68eabc10bd1b4dcaa03efa0e2052ddb, type: 3}
   spawnRadius: 4
-  spawnCount: 80
-  colour: {r: 1, g: 1, b: 1, a: 1}
-  showSpawnRegion: 2
+  spawnCount: 128
+  colour: {r: 1, g: 0, b: 0, a: 1}
+  showSpawnRegion: 1
+--- !u!114 &3969083280644104554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3559297176007848099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f111cc4bfc1c04cf088124af1b2f2549, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compute: {fileID: 7200000, guid: c51b961c8b9d746f1a2f242fa7bf1a31, type: 3}
+  settings: {fileID: 11400000, guid: d8c061f06ce29c342bdc23dffbe0fdec, type: 2}
+  showCollisionSphere: 0
