@@ -1,5 +1,5 @@
 sceneSetups:
-- path: "Assets/Scenes/S\xFCr\xFCDeneme.unity"
+- path: Assets/Scenes/EnvironmentDeneme.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
