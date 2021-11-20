@@ -3,18 +3,30 @@ using UnityEngine;
 public class DroneMovement : MonoBehaviour
 {
     public GameObject Drone;
+    public Transform DroneModel;
 
-    int maxRotation = 35;
 
-    float movementSpeed = 0.1f;
-    float minMovementSpeed = 0.1f;
-    float maxMovementSpeed = 0.5f;
-    float movementSpeedIncrease = 0.05f;
+    [Header("Rotation")]
+    [Header("Physics")]
+    public float PitchSpeed;
+    public float YawSpeed;
+    public float RollSpeed;
 
-    float rotationSpeed = 50f;
+    public float PitchLean;
+    public float YawLean;
+    public float RollLean;
+
+    [Header("Movement")]
+    public float XSpeed;
+    public float YSpeed;
+    public float ZSpeed;
+
+    new Rigidbody rigidbody;
+
 
     void Start()
     {
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -24,36 +36,32 @@ public class DroneMovement : MonoBehaviour
 
     void MoveDrone()
     {
-        Vector3 deltaPosition = Vector3.zero;
+        Vector3 deltaMovement = Vector3.zero;
         Vector3 deltaRotation = Vector3.zero;
 
         if (Input.GetKey(KeyCode.W))
         {
-            deltaPosition += Vector3.forward;
-            deltaRotation += Vector3.right;
+            deltaMovement += Vector3.forward;
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            deltaPosition -= Vector3.forward;
-            deltaRotation -= Vector3.right;
+            deltaMovement += Vector3.back;
         }
 
         if (Input.GetKey(KeyCode.A))
         {
-            deltaPosition -= Vector3.right;
-            deltaRotation += Vector3.forward;
+            deltaMovement += Vector3.left;
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            deltaPosition += Vector3.right;
-            deltaRotation -= Vector3.forward;
+            deltaMovement += Vector3.right;
         }
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            deltaRotation -= Vector3.up;
+            deltaRotation += Vector3.down;
         }
 
         if (Input.GetKey(KeyCode.RightArrow))
@@ -61,14 +69,35 @@ public class DroneMovement : MonoBehaviour
             deltaRotation += Vector3.up;
         }
 
-        movementSpeed = Mathf.Lerp(movementSpeed, maxMovementSpeed, movementSpeedIncrease);
-        if (deltaPosition == Vector3.zero) movementSpeed = minMovementSpeed;
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            deltaMovement += Vector3.up;
+        }
 
-        Vector3 movementVector = deltaPosition * movementSpeed;
-        Debug.Log("movementVector");
-        Debug.Log(movementVector);
-        transform.position += movementVector;
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            deltaMovement += Vector3.down;
+        }
 
-        transform.rotation = Quaternion.RotateTowards(Drone.transform.rotation, Quaternion.Euler(new Vector3(deltaRotation.x * maxRotation, Drone.transform.rotation.eulerAngles.y + deltaRotation.y * rotationSpeed, deltaRotation.z * maxRotation)), Time.deltaTime * rotationSpeed);
+        Debug.Log(deltaRotation);
+
+        #region Rotation
+
+        Vector3 newTorque = new Vector3(deltaRotation.x * PitchSpeed, deltaRotation.y * YawSpeed, 0);
+        rigidbody.AddRelativeTorque(newTorque);
+        rigidbody.rotation = Quaternion.Slerp(rigidbody.rotation, Quaternion.Euler(new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0)), .1f);
+
+        #endregion
+
+        #region Movement
+
+        Vector3 newForce = new Vector3(deltaMovement.x * XSpeed, deltaMovement.y * YSpeed, deltaMovement.z * ZSpeed);
+        rigidbody.AddRelativeForce(newForce);
+        rigidbody.position = Vector3.Lerp(rigidbody.position, transform.position, .5f);
+
+        #endregion
+
+        DroneModel.localEulerAngles = Quaternion.Lerp(DroneModel.transform.localRotation, Quaternion.Euler((deltaRotation.x + deltaMovement.z) * PitchLean, deltaRotation.y * YawLean, (deltaRotation.z - deltaMovement.x) * RollLean), Time.deltaTime * 5f).eulerAngles;
+
     }
 }
